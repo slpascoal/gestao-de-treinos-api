@@ -1,7 +1,10 @@
 import "dotenv/config";
 
+import fastifySwagger from "@fastify/swagger";
+import fastifySwaggerUi from "@fastify/swagger-ui";
 import Fastify from "fastify";
 import {
+  jsonSchemaTransform,
   serializerCompiler,
   validatorCompiler,
   ZodTypeProvider,
@@ -15,12 +18,39 @@ const app = Fastify({
 app.setValidatorCompiler(validatorCompiler);
 app.setSerializerCompiler(serializerCompiler);
 
+await app.register(fastifySwagger, {
+  openapi: {
+    info: {
+      title: "Gestão de Treinos API",
+      description: "API para gerenciamento completo de treinos",
+      version: "1.0.0",
+    },
+    servers: [
+      {
+        description: "localhost",
+        url: "http://localhost:3000",
+      },
+    ],
+  },
+  transform: jsonSchemaTransform,
+
+  // You can also create transform with custom skiplist of endpoints that should not be included in the specification:
+  //
+  // transform: createJsonSchemaTransform({
+  //   skipList: [ '/documentation/static/*' ]
+  // })
+});
+
+await app.register(fastifySwaggerUi, {
+  routePrefix: "/docs",
+});
+
 app.withTypeProvider<ZodTypeProvider>().route({
   method: "GET",
   url: "/",
   schema: {
     description: "hello",
-    tags: ["H"],
+    tags: ["Hello World"],
     response: {
       200: z.object({
         message: z.string(),
