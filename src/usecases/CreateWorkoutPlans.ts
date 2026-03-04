@@ -1,3 +1,4 @@
+import { NotFoundError } from "../errors/index.js";
 import { WeekDay } from "../generated/prisma/enums.js";
 import { prisma } from "../lib/db.js";
 
@@ -78,7 +79,7 @@ export class CreateWorkoutPlan {
       });
 
       if (!result) {
-        throw new Error("Workout plan not found after creation");
+        throw new NotFoundError("Workout plan not found");
       }
 
       return result;
