@@ -5,10 +5,32 @@ import { prisma } from "../lib/db.js";
 interface InputDto {
   userId: string;
   name: string;
+  coverImageUrl?: string | null;
   workoutDays: Array<{
     name: string;
     weekDay: WeekDay;
     isRest: boolean;
+    coverImageUrl?: string | null;
+    estimatedDurationInSeconds: number;
+    exercices: Array<{
+      order: number;
+      name: string;
+      sets: number;
+      reps: number;
+      restTimeInSeconds: number;
+    }>;
+  }>;
+}
+
+export interface OutputDto {
+  id: string;
+  name: string;
+  coverImageUrl: string | null;
+  workoutDays: Array<{
+    name: string;
+    weekDay: WeekDay;
+    isRest: boolean;
+    coverImageUrl: string | null;
     estimatedDurationInSeconds: number;
     exercices: Array<{
       order: number;
@@ -21,7 +43,7 @@ interface InputDto {
 }
 
 export class CreateWorkoutPlan {
-  async execute(dto: InputDto) {
+  async execute(dto: InputDto): Promise<OutputDto> {
     const existingActivePlan = await prisma.workoutPlan.findFirst({
       where: {
         isActive: true,
@@ -44,12 +66,18 @@ export class CreateWorkoutPlan {
         data: {
           userId: dto.userId,
           name: dto.name,
+          ...(dto.coverImageUrl !== undefined && {
+            coverImageUrl: dto.coverImageUrl,
+          }),
           isActive: true,
           workoutDays: {
             create: dto.workoutDays.map((day) => ({
               name: day.name,
               weekDay: day.weekDay,
               isRest: day.isRest,
+              ...(day.coverImageUrl !== undefined && {
+                coverImageUrl: day.coverImageUrl,
+              }),
               estimatedDurationInSeconds: day.estimatedDurationInSeconds,
               exercices: {
                 create: day.exercices.map((exercice) => ({
@@ -69,9 +97,18 @@ export class CreateWorkoutPlan {
         where: {
           id: workoutPlan.id,
         },
-        include: {
+        select: {
+          id: true,
+          name: true,
+          coverImageUrl: true,
           workoutDays: {
-            include: {
+            select: {
+              id: true,
+              name: true,
+              weekDay: true,
+              isRest: true,
+              coverImageUrl: true,
+              estimatedDurationInSeconds: true,
               exercices: true,
             },
           },
@@ -82,7 +119,25 @@ export class CreateWorkoutPlan {
         throw new NotFoundError("Workout plan not found");
       }
 
-      return result;
+      return {
+        id: result.id,
+        name: result.name,
+        coverImageUrl: result.coverImageUrl ?? null,
+        workoutDays: result.workoutDays.map((day) => ({
+          name: day.name,
+          weekDay: day.weekDay,
+          isRest: day.isRest,
+          coverImageUrl: day.coverImageUrl ?? null,
+          estimatedDurationInSeconds: day.estimatedDurationInSeconds,
+          exercices: day.exercices.map((exercice) => ({
+            order: exercice.order,
+            name: exercice.name,
+            sets: exercice.sets,
+            reps: exercice.reps,
+            restTimeInSeconds: exercice.restTimeInSeconds,
+          })),
+        })),
+      };
     });
   }
 }
