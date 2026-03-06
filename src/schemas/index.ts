@@ -30,3 +30,12 @@ export const WorkoutPlanSchema = z.object({
     }),
   ),
 });
+
+export const WorkoutSessionParamsSchema = z.object({
+  planId: z.uuid(),
+  dayId: z.uuid(),
+});
+
+export const WorkoutSessionResponseSchema = z.object({
+  userWorkoutSessionId: z.uuid(),
+});

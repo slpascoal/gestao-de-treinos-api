@@ -39,7 +39,7 @@ pnpm eslint .               # Executa ESLint
   - `entities/` - Interfaces TypeScript para entidades de domínio
   - `errors/` - Arquivos com classes de erro
   - `schemas/` - Schemas Zod para validação de request/response
-  - `usecases/` - Classes de lógica de negócio (padrão use case)
+  - `usecases/` - Classes de lógica de negócio (padrão service)
   - `generated/` - Prisma client gerado automaticamente (output em `generated/prisma/`)
 - `prisma/` - Schema e migrations do Prisma
 

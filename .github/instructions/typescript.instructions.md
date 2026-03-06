@@ -22,7 +22,7 @@ paths:
 ## Nomenclatura
 
 - **SEMPRE** prefira `interface` ao invés de `type`, a menos quando estritamente necessário.
-- **SEMPRE** use kebab-case para nomear arquivos (e.g ./lib/auth-client.ts) com exeção de use cases (use PascalCase).
+- **SEMPRE** use kebab-case para nomear arquivos (e.g ./lib/auth-client.ts) com exeção de services (use PascalCase).
 - **SEMPRE** use PascalCase para nomear classes.
 - **SEMPRE** use camelCase para nomear variáveis, funções e métodos.
 

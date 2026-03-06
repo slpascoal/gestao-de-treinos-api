@@ -14,8 +14,8 @@
 - **SEMPRE** use o @src/schemas/index.ts para tipar respostas de erro.
 - Uma rota **NUNCA** deve conter regras de negócio, apenas validações de dados (com o Zod) e de autenticação (se necessário).
 - Quando uma rota precisar ser protegida (acessível apenas por usuários autenticados), **SEMPRE** use o `auth.api.getSession` (@src/lib/auth.ts) para recuperar a sessão do usuário.
-- Uma rota deve **SEMPRE** instanciar e chamar um use case.
-- **SEMPRE** trate os erros lançados pelo use case.
+- Uma rota deve **SEMPRE** instanciar e chamar um service.
+- **SEMPRE** trate os erros lançados pelo service.
 - **SEMPRE** inclua `tags` e `summary` no schema da rota para documentação no Swagger/OpenAPI.
 
 ### Exemplo:
@@ -82,17 +82,17 @@ export const workoutPlanRoutes = async (app: FastifyInstance) => {
 };
 ```
 
-## Use Cases
+## Services/Use Cases
 
-- Todas as regras de negócio devem estar concentradas dentro de um use case.
-- Todos os use cases devem ser criados em @src/usecases.
-- Todos os use cases devem ser classes, com um método `execute`.
-- Todos os use cases devem ser nomeados com verbos.
-- Quando um use case receber um parâmetro, ele deve **SEMPRE** ser um DTO (`InputDto`), que é uma interface definida no mesmo arquivo.
-- O retorno de um use case deve **SEMPRE** ser tipado com uma interface `OutputDto`, definida no mesmo arquivo. O use case deve mapear o resultado do banco para o `OutputDto`, **NUNCA** retornando o model do Prisma diretamente. Isso garante desacoplamento entre a camada de negócio e o banco de dados.
-- Ao precisar interagir com o banco de dados, um use case deve **SEMPRE** chamar o Prisma diretamente, e não um repository.
-- **NUNCA** lide com erros nos use cases. Quem lida com os erros (com try, catch) é sempre a rota @src/routes.
-- Caso um use case lance uma exceção, deve ser **SEMPRE** lançado um erro customizado. Esses erros ficam em @src/errors/index.ts. Caso um erro necessário não exista, crie-o.
+- Todas as regras de negócio devem estar concentradas dentro de um service.
+- Todos os services devem ser criados em @src/services.
+- Todos os services devem ser classes, com um método `execute`.
+- Todos os services devem ser nomeados com verbos.
+- Quando um service receber um parâmetro, ele deve **SEMPRE** ser um DTO (`InputDto`), que é uma interface definida no mesmo arquivo.
+- O retorno de um service deve **SEMPRE** ser tipado com uma interface `OutputDto`, definida no mesmo arquivo. O service deve mapear o resultado do banco para o `OutputDto`, **NUNCA** retornando o model do Prisma diretamente. Isso garante desacoplamento entre a camada de negócio e o banco de dados.
+- Ao precisar interagir com o banco de dados, um service deve **SEMPRE** chamar o Prisma diretamente, e não um repository.
+- **NUNCA** lide com erros nos services. Quem lida com os erros (com try, catch) é sempre a rota @src/routes.
+- Caso um service lance uma exceção, deve ser **SEMPRE** lançado um erro customizado. Esses erros ficam em @src/errors/index.ts. Caso um erro necessário não exista, crie-o.
 
 ### Exemplo:
 

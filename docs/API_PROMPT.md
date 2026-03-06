@@ -9,7 +9,7 @@ Ela inicia uma sessão de treino de um dia de um plano de treino específico.
 ## Requisitos Técnicos
 
 - Um dia iniciado representa uma WorkoutSession criada no banco de dados.
-- Use case deve se chamar "StartWorkoutSession".
+- service deve se chamar "StartWorkoutSession".
 
 ## Autenticação
 
@@ -42,7 +42,7 @@ interface StatusCode201 {
 
 ## Regras de Negócio
 
-[Descreva as regras que o use case deve implementar, por exemplo:]
+[Descreva as regras que o service deve implementar, por exemplo:]
 
 - Apenas o dono do workout plan pode iniciar a sessão de treino.
 - Caso o dia recebido já tenha uma sessão iniciada (startedAt presente), retorne 409.
