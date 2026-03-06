@@ -126,10 +126,29 @@ export const HomeResponseSchema = z.object({
   }),
   workoutStreak: z.number(),
   consistencyByDay: z.record(
-    z.string(),
+    z.iso.date(),
     z.object({
       workoutDayCompleted: z.boolean(),
       workoutDayStarted: z.boolean(),
     }),
   ),
+});
+
+export const StatsQuerySchema = z.object({
+  from: z.iso.date(),
+  to: z.iso.date(),
+});
+
+export const StatsResponseSchema = z.object({
+  workoutStreak: z.number(),
+  consistencyByDay: z.record(
+    z.iso.date(),
+    z.object({
+      workoutDayStarted: z.boolean(),
+      workoutDayCompleted: z.boolean(),
+    }),
+  ),
+  completedWorkoutsCount: z.number(),
+  conclusionRate: z.number(),
+  totalTimeInSeconds: z.number(),
 });

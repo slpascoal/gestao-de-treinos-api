@@ -269,7 +269,7 @@ export const workoutPlanRoutes = async (app: FastifyInstance) => {
     url: "/:planId/days/:dayId/sessions/:sessionId",
     schema: {
       tags: ["Workout Sessions"],
-      summary: "Update a workout session",
+      summary: "Complete a workout session",
       params: UpdateWorkoutSessionParamsSchema,
       body: UpdateWorkoutSessionBodySchema,
       response: {
