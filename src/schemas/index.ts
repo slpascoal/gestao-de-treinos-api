@@ -18,7 +18,7 @@ export const WorkoutPlanSchema = z.object({
       isRest: z.boolean().default(false),
       coverImageUrl: z.string().nullable().optional(),
       estimatedDurationInSeconds: z.number().min(1),
-      exercices: z.array(
+      exercises: z.array(
         z.object({
           order: z.number().min(0),
           name: z.string().trim().min(1),

@@ -59,11 +59,11 @@ model WorkoutDay {
   updatedAt                  DateTime @updatedAt @db.Timestamptz()
 
   workoutPlan WorkoutPlan        @relation(fields: [workoutPlanId], references: [id], onDelete: Cascade)
-  exercices   WorkoutExercices[]
+  exercises   WorkoutExercises[]
   sessions    WorkoutSession[]
 }
 
-model WorkoutExercices {
+model WorkoutExercises {
   id                String   @id @default(uuid())
   name              String
   order             Int

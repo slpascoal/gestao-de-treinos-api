@@ -12,7 +12,7 @@ interface InputDto {
     isRest: boolean;
     coverImageUrl?: string | null;
     estimatedDurationInSeconds: number;
-    exercices: Array<{
+    exercises: Array<{
       order: number;
       name: string;
       sets: number;
@@ -32,7 +32,7 @@ export interface OutputDto {
     isRest: boolean;
     coverImageUrl: string | null;
     estimatedDurationInSeconds: number;
-    exercices: Array<{
+    exercises: Array<{
       order: number;
       name: string;
       sets: number;
@@ -79,8 +79,8 @@ export class CreateWorkoutPlan {
                 coverImageUrl: day.coverImageUrl,
               }),
               estimatedDurationInSeconds: day.estimatedDurationInSeconds,
-              exercices: {
-                create: day.exercices.map((exercice) => ({
+              exercises: {
+                create: day.exercises.map((exercice) => ({
                   order: exercice.order,
                   name: exercice.name,
                   sets: exercice.sets,
@@ -109,7 +109,7 @@ export class CreateWorkoutPlan {
               isRest: true,
               coverImageUrl: true,
               estimatedDurationInSeconds: true,
-              exercices: true,
+              exercises: true,
             },
           },
         },
@@ -129,7 +129,7 @@ export class CreateWorkoutPlan {
           isRest: day.isRest,
           coverImageUrl: day.coverImageUrl ?? null,
           estimatedDurationInSeconds: day.estimatedDurationInSeconds,
-          exercices: day.exercices.map((exercice) => ({
+          exercises: day.exercises.map((exercice) => ({
             order: exercice.order,
             name: exercice.name,
             sets: exercice.sets,
