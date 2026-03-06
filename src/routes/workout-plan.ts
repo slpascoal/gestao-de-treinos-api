@@ -14,6 +14,10 @@ import {
   UpdateWorkoutSessionBodySchema,
   UpdateWorkoutSessionParamsSchema,
   UpdateWorkoutSessionResponseSchema,
+  WorkoutDayByIdParamsSchema,
+  WorkoutDayByIdResponseSchema,
+  WorkoutPlanByIdParamsSchema,
+  WorkoutPlanByIdResponseSchema,
   WorkoutPlanSchema,
   WorkoutSessionParamsSchema,
   WorkoutSessionResponseSchema,
@@ -22,6 +26,14 @@ import {
   CreateWorkoutPlan,
   type OutputDto,
 } from "../services/CreateWorkoutPlans.js";
+import {
+  GetWorkoutDayById,
+  type OutputDto as GetWorkoutDayByIdOutput,
+} from "../services/GetWorkoutDayById.js";
+import {
+  GetWorkoutPlanById,
+  type OutputDto as GetWorkoutPlanByIdOutput,
+} from "../services/GetWorkoutPlanById.js";
 import {
   type OutputDto as StartSessionOutput,
   StartWorkoutSession,
@@ -36,7 +48,7 @@ export const workoutPlanRoutes = async (app: FastifyInstance) => {
     method: "POST",
     url: "/",
     schema: {
-      tags: ["Workout Sessions"],
+      tags: ["Workout Plan"],
       summary: "Create a workout plan",
       body: WorkoutPlanSchema.omit({ id: true }),
       response: {
@@ -66,6 +78,110 @@ export const workoutPlanRoutes = async (app: FastifyInstance) => {
           workoutDays: request.body.workoutDays,
         });
         return reply.status(201).send(result);
+      } catch (error) {
+        app.log.error(error);
+        if (error instanceof NotFoundError) {
+          return reply.status(404).send({
+            error: error.message,
+            code: "NOT_FOUND",
+          });
+        }
+        return reply.status(500).send({
+          error: "Internal Server Error",
+          code: "INTERNAL_SERVER_ERROR",
+        });
+      }
+    },
+  });
+
+  app.withTypeProvider<ZodTypeProvider>().route({
+    method: "GET",
+    url: "/:id",
+    schema: {
+      tags: ["Workout Plan"],
+      summary: "Get a workout plan by id",
+      params: WorkoutPlanByIdParamsSchema,
+      querystring: z.object({}),
+      response: {
+        200: WorkoutPlanByIdResponseSchema,
+        401: ErrorSchema,
+        404: ErrorSchema,
+        500: ErrorSchema,
+      },
+    },
+    handler: async (request, reply) => {
+      try {
+        const session = await auth.api.getSession({
+          headers: fromNodeHeaders(request.headers),
+        });
+        if (!session) {
+          return reply.status(401).send({
+            error: "Unauthorized",
+            code: "UNAUTHORIZED",
+          });
+        }
+
+        const getWorkoutPlanById = new GetWorkoutPlanById();
+        const result: GetWorkoutPlanByIdOutput =
+          await getWorkoutPlanById.execute({
+            userId: session.user.id,
+            workoutPlanId: request.params.id,
+          });
+
+        return reply.status(200).send(result);
+      } catch (error) {
+        app.log.error(error);
+        if (error instanceof NotFoundError) {
+          return reply.status(404).send({
+            error: error.message,
+            code: "NOT_FOUND",
+          });
+        }
+        return reply.status(500).send({
+          error: "Internal Server Error",
+          code: "INTERNAL_SERVER_ERROR",
+        });
+      }
+    },
+  });
+
+  app.withTypeProvider<ZodTypeProvider>().route({
+    method: "GET",
+    url: "/:planId/days/:dayId",
+    schema: {
+      tags: ["Workout Plan"],
+      summary: "Get a workout day by id",
+      params: WorkoutDayByIdParamsSchema,
+      querystring: z.object({}),
+      response: {
+        200: WorkoutDayByIdResponseSchema,
+        401: ErrorSchema,
+        404: ErrorSchema,
+        500: ErrorSchema,
+      },
+    },
+    handler: async (request, reply) => {
+      try {
+        const session = await auth.api.getSession({
+          headers: fromNodeHeaders(request.headers),
+        });
+        if (!session) {
+          return reply.status(401).send({
+            error: "Unauthorized",
+            code: "UNAUTHORIZED",
+          });
+        }
+
+        const getWorkoutDayById = new GetWorkoutDayById();
+        const result: GetWorkoutDayByIdOutput = await getWorkoutDayById.execute(
+          {
+            userId: session.user.id,
+            workoutPlanId: request.params.planId,
+            workoutDayId: request.params.dayId,
+          },
+        );
+
+        return reply.status(200).send(result);
       } catch (error) {
         app.log.error(error);
         if (error instanceof NotFoundError) {
