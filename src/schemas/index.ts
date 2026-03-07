@@ -205,3 +205,10 @@ export const UserTrainDataSchema = z.object({
 });
 
 export const UserTrainDataNullableResponseSchema = UserTrainDataSchema.nullable();
+
+export const updateUserTrainDataInputSchema = z.object({
+  weightInGrams: z.number().int().positive().describe("Weight of the user in grams"),
+  heightInCentimeters: z.number().int().positive().describe("Height of the user in centimeters"),
+  age: z.number().int().positive().describe("Age of the user"),
+  bodyFatPercentage: z.number().int().min(0).max(100).describe("Body fat percentage of the user"),
+});
