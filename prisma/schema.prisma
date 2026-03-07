@@ -10,15 +10,19 @@ datasource db {
 model User {
   id String @id
 
-  workoutPlans  WorkoutPlan[]
-  name          String
-  email         String
-  emailVerified Boolean       @default(false)
-  image         String?
-  createdAt     DateTime      @default(now()) @db.Timestamptz()
-  updatedAt     DateTime      @updatedAt @db.Timestamptz()
-  sessions      Session[]
-  accounts      Account[]
+  workoutPlans      WorkoutPlan[]
+  name              String
+  email             String
+  emailVerified     Boolean       @default(false)
+  image             String?
+  createdAt         DateTime      @default(now()) @db.Timestamptz()
+  updatedAt         DateTime      @updatedAt @db.Timestamptz()
+  sessions          Session[]
+  accounts          Account[]
+  weightInGrams     Int?
+  heightInCm        Int?
+  age               Int?
+  bodyFatPercentage Int? // 100 represents 100%
 
   @@unique([email])
   @@map("user")
@@ -27,7 +31,7 @@ model User {
 model WorkoutPlan {
   id            String   @id @default(uuid())
   name          String
-  coverImageUrl String?  // optional cover image for the plan
+  coverImageUrl String? // optional cover image for the plan
   userId        String
   isActive      Boolean  @default(true)
   createdAt     DateTime @default(now()) @db.Timestamptz()

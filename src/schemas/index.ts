@@ -9,26 +9,26 @@ export const ErrorSchema = z.object({
 
 export const WorkoutPlanSchema = z.object({
   id: z.uuid(),
-  name: z.string().trim().min(1),
+  name: z.string().trim().min(1).describe("Name of the workout plan"),
   coverImageUrl: z.string().nullable().optional(),
   workoutDays: z.array(
     z.object({
-      name: z.string().trim().min(1),
-      weekDay: z.enum(WeekDay),
-      isRest: z.boolean().default(false),
+      name: z.string().trim().min(1).describe("Name of the workout day"),
+      weekDay: z.enum(WeekDay).describe("Day of the week for the workout day"),
+      isRest: z.boolean().default(false).describe("Indicates if the workout day is a rest day"),
       coverImageUrl: z.string().nullable().optional(),
-      estimatedDurationInSeconds: z.number().min(1),
+      estimatedDurationInSeconds: z.number().min(1).describe("Estimated duration of the workout day in seconds"),
       exercises: z.array(
         z.object({
-          order: z.number().min(0),
-          name: z.string().trim().min(1),
-          sets: z.number().min(1),
-          reps: z.number().min(1),
-          restTimeInSeconds: z.number().min(1),
+          order: z.number().min(0).describe("Order of the exercise in the workout day"),
+          name: z.string().trim().min(1).describe("Name of the exercise"),
+          sets: z.number().min(1).describe("Number of sets for the exercise"),
+          reps: z.number().min(1).describe("Number of repetitions for the exercise"),
+          restTimeInSeconds: z.number().min(1).describe("Rest time for the exercise in seconds"),
         }),
       ),
     }),
-  ),
+  ).describe("List of workout days in the workout plan"),
 });
 
 export const WorkoutSessionParamsSchema = z.object({
@@ -194,3 +194,14 @@ export const StatsResponseSchema = z.object({
   conclusionRate: z.number(),
   totalTimeInSeconds: z.number(),
 });
+
+export const UserTrainDataSchema = z.object({
+  userId: z.string(),
+  userName: z.string(),
+  weightInGrams: z.number(),
+  heightInCentimeters: z.number(),
+  age: z.number(),
+  bodyFatPercentage: z.number().min(0).max(100),
+});
+
+export const UserTrainDataNullableResponseSchema = UserTrainDataSchema.nullable();
